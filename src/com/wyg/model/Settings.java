@@ -11,6 +11,7 @@ public class Settings {
     //配置文件设置
     @Test
     public static void defaultsSettings(){
+        //配置文件位置
         String filePath = System.getProperty("user.dir") + "\\src";
 
         System.out.println("正在检测配置文件...");
@@ -27,11 +28,11 @@ public class Settings {
                 pro.put("url","jdbc:mysql://127.0.0.1:3306/sql2_wyg");      //数据库本地连接
                 pro.put("username","root");                                 //用户名
                 pro.put("password","geenkeyes");                            //用户密码
-                pro.put("savaPath",filePath);                               //文件保存默认目录
+                pro.put("savaPath",System.getProperty("user.dir"));         //导出文件默认保存位置
 
                 FileWriter fileWriter = new FileWriter(filePath + "\\Settings.properties");
                 pro.store(fileWriter,"default setting");
-                fileWriter.close();     // 关闭流
+                fileWriter.close();                                         //关闭流
 
                 System.out.println(file.getName() + "不存在，已完成初始化创建");
             } catch (IOException e) {

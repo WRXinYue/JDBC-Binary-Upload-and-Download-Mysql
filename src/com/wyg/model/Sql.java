@@ -6,8 +6,8 @@ import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 public class Sql{
 
@@ -50,31 +50,44 @@ public class Sql{
 
     //文件导出
     public static void readFileToLocal(String fileName) throws Exception {
-        System.out.println("正在编码导出...");
+        //设置搜索结果数量
+        int count = 0;
+        System.out.println("正在查询文件...");
         String sql = "SELECT * FROM file WHERE file_name = ?";
-        String path = System.getProperty("user.dir" + "\\" + fileName);   //保存路径
-        //创建预编译的statement对象
+
+        //从Settings.properties获取配置文件
+        Properties properties = new Properties();
+        Reader reader = new FileReader(System.getProperty("user.dir")+"\\src\\Settings.properties");
+        properties.load(reader);
+        String path = (String) properties.get("savaPath");
+
+        System.out.println(path);
+        File file = new File(path,fileName);                                       //保存位置的路径
+
+        //创建预编译对象
         PreparedStatement ps = null;
+        FileOutputStream outStream = null;
         try {
             ps = JDBCUtil.getConnection().prepareStatement(sql);
             ps.setString(1,fileName);   //设置Mysql执行语句
             ResultSet result = ps.executeQuery();   //执行sql语句
 
             if (result.next()) {
+                System.out.println("查询成功,正在进行文件编码");
+                count++;    //计数自增
                 //使用Blob对象接收数据库里的图片
                 Blob blob = result.getBlob("file_data");
                 //获取Blob对象的二进制流
                 InputStream in = blob.getBinaryStream();
                 //文件输出流
-                OutputStream out = new FileOutputStream(new File(fileName));    //文件路径
+                outStream = new FileOutputStream(file);    //文件输出流将数据写入文件
 
                 //写出文件夹
                 byte[] buffer = new byte[1024];
                 int len;
                 while ((len = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, len);
+                    outStream.write(buffer, 0, len);
                 }
-                System.out.println(fileName + "文件写出成功");
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -84,6 +97,15 @@ public class Sql{
             }
             if (JDBCUtil.getConnection() != null) {
                 JDBCUtil.getConnection().close();
+            }
+            if (outStream != null) {
+                outStream.close();
+            }
+            if (count != 0) {
+                System.out.println(fileName + "文件编码成功");
+                System.out.println("成功构建" + count + "个文件");
+            } else {
+                System.out.println("未查询到" + fileName);
             }
         }
     }
