@@ -1,19 +1,14 @@
 package com.wyg.view;
 
 import com.wyg.controller.Commodity;
+import com.wyg.model.Settings;
 import com.wyg.model.Sql;
-import org.junit.Test;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Properties;
 
 public class Menu implements Commodity {
 
     public static void main(String[] args) throws Exception{
         //检测默认设置
-        settings();
+        Settings.defaultsSettings();
 
         //开始主菜单
         menuMain();
@@ -37,6 +32,9 @@ public class Menu implements Commodity {
                     break;
                 case "4" :
                     break;
+                case "5" :
+                    System.out.println("退出成功");
+                    return;
                 default :
                     System.out.println("输入有误请重新输入...");
             }
@@ -67,37 +65,6 @@ public class Menu implements Commodity {
                     return;
                 default :
                     System.out.println("输入错误请重新输入");
-            }
-        }
-
-    }
-
-    //配置文件设置
-    @Test
-    private static void defaultsSettings() throws Exception{
-        String filePath = System.getProperty("user.dir") + "\\src";
-
-        System.out.println("正在检测配置文件...");
-        File file = new File(filePath,"Settings.properties");
-        // 判断文件是否存在
-        if(file.exists()) {
-            System.out.println("文件已经存在");
-        } else {
-            try {
-                Properties pro = new Properties();
-                pro.put("url","jdbc:mysql://127.0.0.1:3306/sql2_wyg");
-                pro.put("username","root");
-                pro.put("password","geenkeyes");
-
-                pro.put("savaPath",filePath);     //文件保存默认目录
-
-                FileWriter fileWriter = new FileWriter(filePath + "\\Settings.properties");
-                pro.store(fileWriter,"default setting");
-                fileWriter.close();     // 关闭流
-
-                System.out.println(file.getName() + "不存在，已完成初始化创建");
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }

@@ -6,6 +6,7 @@ import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Sql{
@@ -49,6 +50,7 @@ public class Sql{
 
     //文件导出
     public static void readFileToLocal(String fileName) throws Exception {
+        System.out.println("正在编码导出...");
         String sql = "SELECT * FROM file WHERE file_name = ?";
         String path = System.getProperty("user.dir" + "\\" + fileName);   //保存路径
         //创建预编译的statement对象
@@ -85,15 +87,18 @@ public class Sql{
             }
         }
     }
+    //查询方法
     public static void selectText(String str,int input) throws Exception {
+        /**
+         * 定义SQL查询语句
+         * 1日期 2文件名 3全部查询
+         */
         String sql = null;
-        // 定义SQL ,1日期 2文件名
         if(input == 1) {
-            sql = "SELECT * FROM file WHERE file_date = = \"" + str + "\"";
+            sql = "SELECT * FROM file WHERE file_date = = '" + str + "'";
         }
         else if (input == 2) {
-            System.out.println("SELECT * FROM file WHERE file_name =" + str);
-            sql = "SELECT * FROM file WHERE file_name = \"" +  str + "\"";
+            sql = "SELECT * FROM file WHERE file_name LIKE '%" +  str + "%'";
         }
         else if (input == 3) {
             sql = "SELECT * FROM file";
@@ -108,22 +113,30 @@ public class Sql{
         List<Brand> brands = new ArrayList<>();
         while (rs.next()){
             //id, file_name, file_date, file_path, file_data
-            String fileid = rs.getString("file_id");
+            int fileId = rs.getInt("file_id");
             String fileName = rs.getString("file_name");
             String fileDate = rs.getString("file_date");
             String filePath = rs.getString("file_path");
             //封装Brand对象
             brand = new Brand();
-            brand.setFilePath(fileid);
+            brand.setFileId(fileId);
             brand.setFileName(fileName);
             brand.setFileDate(fileDate);
             brand.setFilePath(filePath);
             //装载集合
             brands.add(brand);
         }
-        System.out.println(brands);
+        //增强for输出
+        for (Brand brand1 : brands) {
+            System.out.print("文件ID：" + brand1.getFileId() + "\t");
+            System.out.print("文件名：" + brand1.getFileName() + "\t");
+            System.out.print("文件日期：" + brand1.getFileDate() + "\t");
+            System.out.print("文件路径：" +brand1.getFilePath() + "\t");
+            System.out.println();
+        }
+
         //资源释放
         JDBCUtil.close(JDBCUtil.getConnection(),pstmt,rs);
-        System.out.println("查询成功");
+        System.out.println("查询结束");
     }
 }

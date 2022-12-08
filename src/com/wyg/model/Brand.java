@@ -4,9 +4,11 @@ public class Brand {
 
     // 定义sql id, file_name, file_date, file_path
 
+    private int fileId;
     private String fileName;
     private String fileDate;
     private String filePath;
+    private long fileData;
 
     public long getFileData() {
         return fileData;
@@ -15,8 +17,6 @@ public class Brand {
     public void setFileData(long fileData) {
         this.fileData = fileData;
     }
-
-    private long fileData;
 
     public String getFileName() {
         return fileName;
@@ -40,5 +40,13 @@ public class Brand {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public int getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(int fileId) {
+        this.fileId = fileId;
     }
 }

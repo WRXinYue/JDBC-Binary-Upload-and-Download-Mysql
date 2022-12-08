@@ -7,31 +7,26 @@ import java.sql.*;
 import java.util.Properties;
 
 public class JDBCUtil {
-    private static Properties ps = new Properties();
+    private static final Properties ps = new Properties();
 
     /**
      * 建立连接方法
-     * @throws Exception
      */
     public static Connection getConnection() throws Exception {
-        Connection conn = null;
-        if (conn == null) {
-            //从Settings.properties获取配置文件
-            Properties properties = new Properties();
-            Reader reader = new FileReader(System.getProperty("user.dir")+"\\src\\Settings.properties");
-            properties.load(reader);
-            String url = (String) properties.get("url");
-            String userName = (String) properties.get("username");
-            String passWorld = (String) properties.get("password");
+        Connection conn;
+        //从Settings.properties获取配置文件
+        Properties properties = new Properties();
+        Reader reader = new FileReader(System.getProperty("user.dir")+"\\src\\Settings.properties");
+        properties.load(reader);
+        String url = (String) properties.get("url");
+        String userName = (String) properties.get("username");
+        String passWorld = (String) properties.get("password");
 
-            //加载驱动
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            //获取连接
-            conn = DriverManager.getConnection(url,userName,passWorld);
-            return conn;
-        } else {
-            return conn;
-        }
+        //加载驱动
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        //获取连接
+        conn = DriverManager.getConnection(url,userName,passWorld);
+        return conn;
     }
 
     /**
