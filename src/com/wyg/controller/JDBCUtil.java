@@ -1,7 +1,5 @@
-package com.wyg.model;
+package com.wyg.controller;
 
-import java.io.FileReader;
-import java.io.Reader;
 import java.sql.*;
 
 import java.util.Properties;
@@ -14,13 +12,10 @@ public class JDBCUtil {
      */
     public static Connection getConnection() throws Exception {
         Connection conn;
-        //从Settings.properties获取配置文件
-        Properties properties = new Properties();
-        Reader reader = new FileReader(System.getProperty("user.dir")+"\\src\\Settings.properties");
-        properties.load(reader);
-        String url = (String) properties.get("url");
-        String userName = (String) properties.get("username");
-        String passWorld = (String) properties.get("password");
+
+        String url = (String) SettingUtil.getProperties().get("url");
+        String userName = (String) SettingUtil.getProperties().get("username");
+        String passWorld = (String) SettingUtil.getProperties().get("password");
 
         //加载驱动
         Class.forName("com.mysql.cj.jdbc.Driver");
